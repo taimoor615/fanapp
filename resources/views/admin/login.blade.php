@@ -18,7 +18,7 @@
     <!-- Layout styles -->
     <link rel="stylesheet" href="{{asset('assets/css/style.css')}}">
     <!-- End layout styles -->
-    <link rel="shortcut icon" href="{{asset('assets/images/favicon.png')}}" />
+    <link rel="shortcut icon" href="{{asset('assets/images/fav.png')}}" />
   </head>
   <body>
     <div class="container-scroller">
@@ -34,8 +34,8 @@
                         @endforeach
                     </div>
                 @endif
-                <div class="brand-logo">
-                  <img src="../../assets/images/logo.svg">
+                <div class="brand-logo text-center">
+                  <img src="{{ asset('assets/images/logo.png') }}">
                 </div>
                 <h4>Hello! let's get started</h4>
                 <h6 class="font-weight-light">Sign in to continue.</h6>

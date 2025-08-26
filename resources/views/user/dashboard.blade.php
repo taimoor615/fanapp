@@ -75,7 +75,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <p class="card-title text-md text-muted mb-0">Games Attended</p>
-                        <h3 class="font-weight-bold mb-0 text-info">{{ auth()->user()->games_attended ?? 0 }}</h3>
+                        <h3 class="font-weight-bold mb-0 text-info">{{ $attendedGames ?? 0 }}</h3>
                     </div>
                     <div class="icon-circle bg-gradient-info">
                         <i class="mdi mdi-soccer text-white"></i>
@@ -100,7 +100,7 @@
                     <div class="col-md-6 mb-3">
                         <div class="card border-0 shadow-sm">
                             @if($news->featured_image)
-                            <img src="{{ $news->featured_image }}" class="card-img-top" alt="{{ $news->title }}" style="height: 150px; object-fit: cover;">
+                            <img src="{{ asset('storage/news/'.$news->featured_image) }}" class="card-img-top" alt="{{ $news->title }}" style="height: 150px; object-fit: cover;">
                             @endif
                             <div class="card-body p-3">
                                 <h6 class="card-title">{{ Str::limit($news->title, 60) }}</h6>
@@ -175,7 +175,7 @@
                         </a>
                     </div>
                     <div class="col-md-2 mb-3">
-                        <a href="{{ route('user.fan-photos.index') }}" class="btn btn-gradient-success btn-block">
+                        <a href="{{ route('user.fancam.index') }}" class="btn btn-gradient-success btn-block">
                             <i class="mdi mdi-camera me-2"></i>Upload Photo
                         </a>
                     </div>

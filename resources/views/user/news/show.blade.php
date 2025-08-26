@@ -1,6 +1,6 @@
 @extends('layouts.user-dashboard')
 
-@section('title', 'Games')
+@section('title', 'News Detail')
 
 @section('content')
 <div class="container mt-4">

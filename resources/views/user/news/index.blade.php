@@ -1,6 +1,6 @@
 @extends('layouts.user-dashboard')
 
-@section('title', 'Games')
+@section('title', 'News')
 
 @section('content')
 <div class="container">
@@ -110,11 +110,11 @@
 
                 <div class="card-footer bg-transparent border-0">
                     <div class="d-flex justify-content-between align-items-center">
-                        <div class="social-share">
+                        {{-- <div class="social-share">
                             <button class="btn btn-sm btn-outline-primary" onclick="shareNews({{ $article->id }})">
                                 <i class="fa fa-share-alt"></i> Share
                             </button>
-                        </div>
+                        </div> --}}
                         @if($article->is_featured)
                         <div>
                             <i class="fa fa-star text-warning" title="Featured"></i>
@@ -128,13 +128,13 @@
     </div>
 
     <!-- Load More Button -->
-    <div class="row">
+    {{-- <div class="row">
         <div class="col-12 text-center">
             <button class="btn btn-outline-primary btn-lg" id="loadMoreBtn">
                 <i class="fa fa-plus"></i> Load More News
             </button>
         </div>
-    </div>
+    </div> --}}
 </div>
 <script>
     // News sharing functionality

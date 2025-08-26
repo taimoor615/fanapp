@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+use App\Models\Fancam;
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -58,11 +60,6 @@ class User extends Authenticatable
     public function redemptions()
     {
         return $this->hasMany(UserRedemption::class);
-    }
-
-    public function fanPhotos()
-    {
-        return $this->hasMany(FanPhoto::class);
     }
 
     public function orders()
@@ -197,5 +194,9 @@ class User extends Authenticatable
                     ->orderBy('attended_at', 'desc')
                     ->limit($limit)
                     ->get();
+    }
+    public function fancams()
+    {
+        return $this->hasMany(Fancam::class);
     }
 }

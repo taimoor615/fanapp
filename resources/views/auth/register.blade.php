@@ -4,7 +4,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>@yield('title', 'User Dashboard')</title>
+    <title>@yield('title', 'User Register')</title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="{{asset('assets/vendors/mdi/css/materialdesignicons.min.css')}}">
     <link rel="stylesheet" href="{{asset('assets/vendors/ti-icons/css/themify-icons.css')}}">
@@ -20,7 +20,7 @@
     <!-- Layout styles -->
     <link rel="stylesheet" href="{{asset('assets/css/style.css')}}">
     <!-- End layout styles -->
-    <link rel="shortcut icon" href="{{asset('assets/images/favicon.png')}}" />
+    <link rel="shortcut icon" href="{{asset('assets/images/fav.png')}}" />
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -33,7 +33,7 @@
                     <div class="col-lg-6 mx-auto">
                         <div class="auth-form-light text-left p-5">
                             <div class="brand-logo text-center mb-4">
-                                <img src="{{ asset('assets/images/logo.svg') }}" alt="logo">
+                                <img src="{{ asset('assets/images/logo.png') }}" alt="logo">
                             </div>
                             <h4 class="text-center">New here?</h4>
                             <h6 class="font-weight-light text-center">Signing up is easy. It only takes a few steps</h6>

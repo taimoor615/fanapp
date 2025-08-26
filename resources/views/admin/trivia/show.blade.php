@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Game Managment')
+@section('title', 'View Trivia Question')
 
 @section('content')
 <div class="container mt-4">

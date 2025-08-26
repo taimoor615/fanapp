@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Admin Dashboard')
+@section('title', 'Edit User')
 
 @section('content')
 {{-- <div class="main-panel"> --}}

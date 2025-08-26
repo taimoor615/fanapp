@@ -25,7 +25,7 @@
     <!-- Layout styles -->
     <link rel="stylesheet" href="{{asset('assets/css/style.css')}}">
     <!-- End layout styles -->
-    <link rel="shortcut icon" href="{{asset('assets/images/favicon.png')}}" />
+    <link rel="shortcut icon" href="{{asset('assets/images/fav.png')}}" />
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -36,10 +36,10 @@
         <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
                 <a class="navbar-brand brand-logo" href="{{ route('user.dashboard') }}">
-                    <img src="{{ asset('assets/images/logo.svg') }}" alt="logo" />
+                    <img src="{{ asset('assets/images/logo.png') }}" alt="logo" />
                 </a>
                 <a class="navbar-brand brand-logo-mini" href="{{ route('user.dashboard') }}">
-                    <img src="{{ asset('assets/images/logo-mini.svg') }}" alt="logo" />
+                    <img src="{{ asset('assets/images/logo.png') }}" alt="logo" />
                 </a>
             </div>
 
@@ -190,8 +190,8 @@
                     </li>
 
                     <!-- Fan Cam -->
-                    <li class="nav-item {{ request()->routeIs('user.fan-photos.*') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ route('user.fan-photos.index') }}">
+                    <li class="nav-item {{ request()->routeIs('user.fancam.*') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('user.fancam.index') }}">
                             <span class="menu-title">Fan Cam</span>
                             <i class="mdi mdi-camera menu-icon"></i>
                         </a>
@@ -278,6 +278,13 @@
 
     <!-- Owl Carousel JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+    <style>
+        .navbar .navbar-brand-wrapper .navbar-brand img{
+            height: 65px;
+            width: auto;
+        }
+    </style>
     @stack('owlcarousel')
   </body>
 </html>

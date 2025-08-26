@@ -95,7 +95,7 @@ class NewsController extends Controller
         if ($request->hasFile('featured_image')) {
             $image = $request->file('featured_image');
             $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-            $image->storeAs('news', $imageName, 'public'); // saves as storage/app/public/news/imagename.jpg
+            $image->storeAs('news', $imageName, 'public');
         }
 
         // Create news entry

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 
 class GamePaymentController extends Controller
 {
-public function create(Game $game)
+public function show(Game $game)
 {
     return view('user.games.upload-payment', compact('game'));
 }

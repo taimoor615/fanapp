@@ -7,8 +7,8 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="text-center mb-4">
-                <h2><i class="fa fa-trophy text-warning"></i> Trivia Leaderboard</h2>
-                <p class="lead">Top scoring trivia champions!</p>
+                <h2><i class="fa fa-trophy text-warning"></i> Leaderboard</h2>
+                <p class="lead">Top scoring champions!</p>
             </div>
 
             <div class="card shadow">
@@ -59,16 +59,6 @@
                                 @endforeach
                             </tbody>
                         </table>
-                    </div>
-                </div>
-                <div class="card-footer text-center">
-                    <div class="d-flex justify-content-center gap-2">
-                        <a href="{{ route('user.trivia.play') }}" class="btn btn-success">
-                            <i class="fa fa-play"></i> Play Trivia
-                        </a>
-                        <a href="{{ route('user.trivia.index') }}" class="btn btn-secondary">
-                            <i class="fa fa-arrow-left"></i> Back to Trivia
-                        </a>
                     </div>
                 </div>
             </div>

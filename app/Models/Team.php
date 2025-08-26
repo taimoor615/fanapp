@@ -9,7 +9,6 @@ use App\Models\User;
 use App\Models\NewsPost;
 use App\Models\Game;
 use App\Models\Product;
-use App\Models\FanPhoto;
 
 class Team extends Model
 {
@@ -43,8 +42,8 @@ class Team extends Model
         return $this->hasMany(Product::class);
     }
 
-    public function fanPhotos()
+    public function fancams()
     {
-        return $this->hasMany(FanPhoto::class);
+        return $this->hasMany(Fancam::class);
     }
 }

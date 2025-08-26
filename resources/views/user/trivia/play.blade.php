@@ -1,6 +1,6 @@
 @extends('layouts.user-dashboard')
 
-@section('title', 'Games')
+@section('title', 'Play Game')
 
 @section('content')
 <div class="container mt-4">
@@ -349,21 +349,21 @@
             document.getElementById('game-screen').classList.add('d-none');
             document.getElementById('results-screen').classList.remove('d-none');
 
-            document.getElementById('final-score').textContent = results.total_score;
+            document.getElementById('final-score').textContent = results.total_points;
             document.getElementById('correct-count').textContent = results.correct_answers;
             document.getElementById('total-count').textContent = results.total_questions;
-            document.getElementById('accuracy').textContent = results.accuracy_percentage + '%';
-            document.getElementById('xp-earned').textContent = results.xp_earned || results.total_score;
+            document.getElementById('accuracy').textContent = results.accuracy + '%';
+            document.getElementById('xp-earned').textContent = results.xp_earned || results.total_points;
 
             const finalProgress = document.getElementById('final-progress');
-            finalProgress.style.width = results.accuracy_percentage + '%';
+            finalProgress.style.width = results.accuracy + '%';
 
             // Performance message
             const messageEl = document.getElementById('performance-message');
-            if (results.accuracy_percentage >= 80) {
+            if (results.accuracy >= 80) {
                 messageEl.className = 'alert alert-success';
                 messageEl.innerHTML = '<i class="fa fa-trophy"></i> Outstanding! You\'re a true team expert!';
-            } else if (results.accuracy_percentage >= 60) {
+            } else if (results.accuracy >= 60) {
                 messageEl.className = 'alert alert-info';
                 messageEl.innerHTML = '<i class="fa fa-thumbs-up"></i> Great job! Keep playing to master more trivia!';
             } else {

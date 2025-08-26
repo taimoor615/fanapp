@@ -17,7 +17,12 @@ class TriviaController extends Controller
 {
     public function __construct()
     {
-        // $this->middleware('auth:web');
+        $this->middleware('auth:web')->except([
+        'getQuestions',
+        'submitAnswers',
+        'getStats',
+        'leaderboard'
+    ]);
     }
 
     // Trivia game homepage for users
@@ -163,74 +168,109 @@ class TriviaController extends Controller
     // Submit trivia answers and calculate score
     public function submitAnswers(Request $request)
     {
-        $request->validate([
-            'answers' => 'required|array',
-            'answers.*.question_id' => 'required|integer|exists:trivia_questions,id',
-            'answers.*.selected_answer' => 'required'
-        ]);
-
-        $userId = auth()->id();
-        $answers = $request->get('answers');
-        $questionIds = collect($answers)->pluck('question_id');
-
-        // Fetch all related questions at once
-        $questions = TriviaQuestion::whereIn('id', $questionIds)->get()->keyBy('id');
-
-        $totalPoints = 0;
-        $correctCount = 0;
-        $results = [];
-
-        foreach ($answers as $answer) {
-            $questionId = $answer['question_id'];
-            $selectedAnswer = $answer['selected_answer'];
-
-            $question = $questions[$questionId] ?? null;
-            if (!$question) continue;
-
-            $isCorrect = $question->correct_answer == $selectedAnswer;
-
-            $points = 0;
-            if ($isCorrect) {
-                $correctCount++;
-                $points = match ($question->difficulty) {
-                    'easy' => 10,
-                    'medium' => 20,
-                    'hard' => 30,
-                    default => 10
-                };
-                $totalPoints += $points;
+        try {
+            // If not authenticated, require user_id from request
+            if (!Auth()->check()) {
+                $request->validate([
+                    'user_id' => 'required|exists:users,id',
+                ]);
             }
 
-            // Save to DB per question attempt
-            UserTriviaAttempt::create([
-                'user_id' => $userId,
-                'question_id' => $questionId,
-                'selected_answer' => $selectedAnswer,
-                'is_correct' => $isCorrect,
-                'points_earned' => $points,
-                'completed_at' => Carbon::now()
+            $request->validate([
+                'answers' => 'required|array|min:1',
+                'answers.*.question_id' => 'required|integer|exists:trivia_questions,id',
+                'answers.*.selected_answer' => 'required'
             ]);
 
-            $results[] = [
-                'question_id' => $questionId,
-                'selected_answer' => $selectedAnswer,
-                'correct_answer' => $question->correct_answer,
-                'is_correct' => $isCorrect,
-                'points_earned' => $points
-            ];
-        }
+            $userId = Auth()->id() ?? $request->get('user_id');
+            $answers = $request->get('answers');
+            $questionIds = collect($answers)->pluck('question_id');
 
-        return response()->json([
-            'status' => 'success',
-            'data' => [
-                'total_questions' => count($answers),
-                'correct_answers' => $correctCount,
-                'total_points' => $totalPoints,
-                'accuracy' => round(($correctCount / count($answers)) * 100, 1),
-                'results' => $results
-            ]
-        ]);
+            // Fetch all related questions at once
+            $questions = TriviaQuestion::whereIn('id', $questionIds)->get()->keyBy('id');
+
+            $totalPoints = 0;
+            $correctCount = 0;
+            $results = [];
+
+            foreach ($answers as $answer) {
+                $questionId = $answer['question_id'];
+                $selectedAnswer = $answer['selected_answer'];
+
+                $question = $questions[$questionId] ?? null;
+                if (!$question) continue;
+
+                $isCorrect = $question->correct_answer == $selectedAnswer;
+
+                $points = 0;
+                if ($isCorrect) {
+                    $correctCount++;
+                    $points = match ($question->difficulty) {
+                        'easy' => 10,
+                        'medium' => 20,
+                        'hard' => 30,
+                        default => 10
+                    };
+                    $totalPoints += $points;
+                }
+
+                // Save to DB per question attempt
+                UserTriviaAttempt::create([
+                    'user_id' => $userId,
+                    'question_id' => $questionId,
+                    'selected_answer' => $selectedAnswer,
+                    'is_correct' => $isCorrect,
+                    'points_earned' => $points,
+                    'completed_at' => Carbon::now()
+                ]);
+
+                $results[] = [
+                    'question_id' => $questionId,
+                    'selected_answer' => $selectedAnswer,
+                    'correct_answer' => $question->correct_answer,
+                    'is_correct' => $isCorrect,
+                    'points_earned' => $points
+                ];
+            }
+
+            // Add points to user total
+            if ($totalPoints > 0) {
+                User::where('id', $userId)->increment('total_points', $totalPoints);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'total_questions' => count($answers),
+                    'correct_answers' => $correctCount,
+                    'total_points' => $totalPoints,
+                    'accuracy' => round(($correctCount / count($answers)) * 100, 1),
+                    'results' => $results
+                ]
+            ], 200);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Return validation errors in JSON
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+
+        } catch (\Exception $e) {
+            // Log and return the error for debugging
+            \Log::error('Trivia submit failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Something went wrong: ' . $e->getMessage()
+            ], 500);
+        }
     }
+
 
 
     // Get user's trivia statistics
@@ -265,7 +305,7 @@ class TriviaController extends Controller
         $period = $request->get('period', 'all_time'); // all_time, monthly, weekly
 
         $query = UserTriviaAttempt::select('user_id', DB::raw('SUM(points_earned) as total_points'))
-                                 ->with('user:id,first_name')
+                                 ->with('user:id,first_name,last_name')
                                  ->groupBy('user_id')
                                  ->orderBy('points_earned', 'desc')
                                  ->limit(50);
@@ -282,6 +322,7 @@ class TriviaController extends Controller
             return [
                 'rank' => $index + 1,
                 'first_name' => $result->user->first_name,
+                'last_name' => $result->user->last_name,
                 'total_points' => $result->total_points,
                 'user_id' => $result->user_id,
             ];
@@ -316,9 +357,11 @@ class TriviaController extends Controller
         $user = Auth::user();
 
         $alreadyAttempted = UserTriviaAttempt::where('user_id', $user->id)
-            ->whereDate('created_at', now()->toDateString())
+            ->where('created_at', '>=', now()->subHours(24))
             ->whereHas('question', fn($q) => $q->where('difficulty', 'medium'))
             ->exists();
+
+        // dd($alreadyAttempted);
 
         if ($alreadyAttempted) {
             return view('user.trivia.daily-completed');

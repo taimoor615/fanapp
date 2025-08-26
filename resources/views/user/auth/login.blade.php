@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Login - Fan App')
+@section('title', 'Login')
 
 @section('content')
 <div class="container-fluid page-body-wrapper full-page-wrapper">

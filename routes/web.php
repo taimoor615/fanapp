@@ -9,17 +9,17 @@ use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\GameController as AdminGameController;
 use App\Http\Controllers\Admin\RewardController as AdminRewardController;
 use App\Http\Controllers\Admin\TriviaController as AdminTriviaController;
-use App\Http\Controllers\Admin\FanPhotoController as AdminFanPhotoController;
 use App\Http\Controllers\Admin\GamePaymentController as AdminGamePaymentController;
+use App\Http\Controllers\Admin\FancamController as AdminFancamController;
 
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\User\NewsController as UserNewsController;
 use App\Http\Controllers\User\GameController as UserGameController;
 use App\Http\Controllers\User\RewardController as UserRewardController;
 use App\Http\Controllers\User\TriviaController as UserTriviaController;
-use App\Http\Controllers\User\FanPhotoController as UserFanPhotoController;
 use App\Http\Controllers\User\ProfileController as UserProfileController;
 use App\Http\Controllers\User\GamePaymentController as UserGamePaymentController;
+use App\Http\Controllers\User\FancamController as UserFancamController;
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -91,7 +91,7 @@ Route::middleware('guest:web')->group(function () {
 */
 Route::prefix('admin')->group(function () {
     Route::group(['middleware' => ['guest:admin']], function () {
-        Route::get('/login', [AdminController::class, 'showLogin'])->name('admin.login');
+        Route::get('/login', [AdminController::class, 'showLogin'])->name('admin.showlogin');
         Route::post('/login', [AdminController::class, 'login'])->name('admin.login');
     });
 });
@@ -130,12 +130,23 @@ Route::middleware(['auth:admin', 'admin'])->prefix('admin')->name('admin.')->gro
         Route::get('/redemptions', [AdminRewardController::class, 'redemptions'])->name('redemptions');
     });
 
-    // Fan Photos Management
-    Route::prefix('fan-photos')->name('fan-photos.')->group(function () {
-        Route::get('/', [AdminFanPhotoController::class, 'index'])->name('index');
-        Route::post('/{photo}/approve', [AdminFanPhotoController::class, 'approve'])->name('approve');
-        Route::post('/{photo}/reject', [AdminFanPhotoController::class, 'reject'])->name('reject');
-        Route::delete('/{photo}', [AdminFanPhotoController::class, 'destroy'])->name('destroy');
+    // Fan Cams Management
+    Route::prefix('fancam')->name('fancam.')->group(function () {
+        Route::get('/', [AdminFancamController::class, 'index'])->name('index');
+        Route::get('/manage', [AdminFancamController::class, 'manage'])->name('manage');
+        Route::get('/{fancam}', [AdminFancamController::class, 'show'])->name('show');
+        Route::delete('/{fancam}', [AdminFancamController::class, 'destroy'])->name('destroy');
+
+        // Status and Points Management
+        Route::post('/{fancam}/status', [AdminFancamController::class, 'updateStatus'])->name('status');
+        Route::post('/{fancam}/points', [AdminFancamController::class, 'updatePoints'])->name('points');
+
+        // Bulk Actions
+        Route::post('/bulk-delete', [AdminFancamController::class, 'bulkDelete'])->name('bulk-delete');
+        Route::post('/bulk-status', [AdminFancamController::class, 'bulkUpdateStatus'])->name('bulk-status');
+
+        // Game Statistics
+        Route::get('/game/{game}/stats', [AdminFancamController::class, 'gameStats'])->name('game-stats');
     });
 
     // Trivia Management
@@ -205,13 +216,16 @@ Route::middleware(['auth:web', 'verified'])->prefix('dashboard')->name('user.')-
         Route::get('/history', [UserRewardController::class, 'history'])->name('history');
     });
 
-    // Fan Photos
-    Route::prefix('fan-photos')->name('fan-photos.')->group(function () {
-        Route::get('/', [UserFanPhotoController::class, 'index'])->name('index');
-        Route::post('/', [UserFanPhotoController::class, 'store'])->name('store');
-        Route::delete('/{photo}', [UserFanPhotoController::class, 'destroy'])->name('destroy');
+    // Fan Cams
+    Route::prefix('fancam')->name('fancam.')->group(function () {
+    Route::get('/', [UserFancamController::class, 'index'])->name('index');     // user/fancam/index.blade.php
+    Route::get('/create', [UserFancamController::class, 'create'])->name('create'); // user/fancam/create.blade.php
+    Route::post('/store', [UserFancamController::class, 'store'])->name('store');
+    Route::get('/{fancam}', [UserFancamController::class, 'show'])->name('show');   // user/fancam/show.blade.php
+    Route::get('/{fancam}/edit', [UserFancamController::class, 'edit'])->name('edit'); // user/fancam/edit.blade.php
+    Route::put('/{fancam}', [UserFancamController::class, 'update'])->name('update');
+    Route::delete('/{fancam}', [UserFancamController::class, 'destroy'])->name('destroy');
     });
-
     // Trivia
     Route::prefix('trivia')->name('trivia.')->group(function () {
         // Route::get('/{question}', [UserTriviaController::class, 'show'])->name('show');
@@ -236,8 +250,9 @@ Route::middleware(['auth:web', 'verified'])->prefix('dashboard')->name('user.')-
     });
 
     // Upload Payment
-    Route::get('/games/{game}/upload-receipt', [UserGamePaymentController::class, 'create'])->name('games.payment');
-    Route::post('/games/{game}/upload-receipt', [UserGamePaymentController::class, 'store'])->name('games.payment.store');
+    // Route::get('/games/{game}/upload-receipt', [UserGamePaymentController::class, 'create'])->name('games.payment');
+    Route::get('/games/{game}/upload-receipt', [UserGamePaymentController::class, 'show'])->name('games.payment.show');
+    Route::post('/games/{game}/submit-payment-receipt', [UserGamePaymentController::class, 'store'])->name('games.payment.store');
 
     // User Logout Route
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');

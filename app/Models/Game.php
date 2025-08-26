@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
 use App\Models\Team;
+use App\Models\Fancam;
 use App\Models\GameAttendance;
 use App\Models\GamePayment;
 
@@ -162,5 +163,9 @@ class Game extends Model
     public function getTotalAttendanceCount()
     {
         return $this->attendances()->count();
+    }
+    public function fancams()
+    {
+        return $this->hasMany(Fancam::class);
     }
 }

@@ -20,7 +20,7 @@
     <!-- Layout styles -->
     <link rel="stylesheet" href="{{asset('assets/css/style.css')}}">
     <!-- End layout styles -->
-    <link rel="shortcut icon" href="{{asset('assets/images/favicon.png')}}" />
+    <link rel="shortcut icon" href="{{asset('assets/images/fav.png')}}" />
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -31,10 +31,10 @@
         <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
                 <a class="navbar-brand brand-logo" href="{{ route('admin.dashboard') }}">
-                    <img src="{{ asset('assets/images/logo.svg') }}" alt="logo" />
+                    <img src="{{ asset('assets/images/logo.png') }}" alt="logo" />
                 </a>
                 <a class="navbar-brand brand-logo-mini" href="{{ route('admin.dashboard') }}">
-                    <img src="{{ asset('assets/images/logo-mini.svg') }}" alt="logo" />
+                    <img src="{{ asset('assets/images/logo.png') }}" alt="logo" />
                 </a>
             </div>
 
@@ -77,31 +77,6 @@
                         </div>
                     </li>
 
-                    <!-- Notifications -->
-                    {{-- <li class="nav-item dropdown">
-                        <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
-                            <i class="mdi mdi-bell-outline"></i>
-                            <span class="count-symbol bg-danger"></span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
-                            <h6 class="p-3 mb-0">Notifications</h6>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <div class="preview-icon bg-success">
-                                        <i class="mdi mdi-calendar"></i>
-                                    </div>
-                                </div>
-                                <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                                    <h6 class="preview-subject font-weight-normal mb-1">New user registered</h6>
-                                    <p class="text-gray ellipsis mb-0">Check new fan registrations</p>
-                                </div>
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <h6 class="p-3 mb-0 text-center">See all notifications</h6>
-                        </div>
-                    </li> --}}
-
                     <li class="nav-item nav-logout d-none d-lg-block">
                         <form method="POST" action="{{ route('admin.logout') }}">
                             @csrf
@@ -137,8 +112,12 @@
                         </a>
                     </li>
 
+                    @php
+                        $currentRoute = Route::currentRouteName();
+                    @endphp
+
                     <!-- Dashboard -->
-                    <li class="nav-item {{ Route::currentRouteName() === 'admin.dashboard' ? 'active' : '' }}">
+                    <li class="nav-item {{ $currentRoute === 'admin.dashboard' ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('admin.dashboard') }}">
                             <span class="menu-title">Dashboard</span>
                             <i class="mdi mdi-home menu-icon"></i>
@@ -146,7 +125,7 @@
                     </li>
 
                     <!-- Teams Management -->
-                    <li class="nav-item {{ str_starts_with(Route::currentRouteName(), 'admin.teams') ? 'active' : '' }}">
+                    <li class="nav-item {{ $currentRoute === 'admin.teams.index' || $currentRoute === 'admin.teams.create' || $currentRoute === 'admin.teams.edit' || $currentRoute === 'admin.teams.show' ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('admin.teams.index') }}">
                             <span class="menu-title">Teams</span>
                             <i class="mdi mdi-account-group menu-icon"></i>
@@ -154,10 +133,7 @@
                     </li>
 
                     <!-- Users Management -->
-                    @php
-                        $isUserRoute = request()->routeIs('admin.users.index') || request()->routeIs('admin.users.create') || request()->routeIs('admin.users.edit');
-                    @endphp
-                    <li class="nav-item {{ $isUserRoute ? 'active' : '' }}">
+                    <li class="nav-item {{ $currentRoute === 'admin.users.index' || $currentRoute === 'admin.users.create' || $currentRoute === 'admin.users.edit' || $currentRoute === 'admin.users.show' ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('admin.users.index') }}">
                             <span class="menu-title">Users</span>
                             <i class="mdi mdi-account-multiple menu-icon"></i>
@@ -165,84 +141,113 @@
                     </li>
 
                     <!-- News Management -->
-                    <li class="nav-item {{ request()->routeIs('admin.news.*') ? 'active' : '' }}">
-                        <a class="nav-link collapsed" data-bs-toggle="collapse" href="#news-menu" aria-expanded="false" aria-controls="news-menu">
+                    @php
+                        $newsActive = str_starts_with($currentRoute, 'admin.news.');
+                    @endphp
+                    <li class="nav-item {{ $newsActive ? 'active' : '' }}">
+                        <a class="nav-link {{ $newsActive ? '' : 'collapsed' }}" data-bs-toggle="collapse" href="#news-menu" aria-expanded="{{ $newsActive ? 'true' : 'false' }}" aria-controls="news-menu">
                             <span class="menu-title">News & Posts</span>
                             <i class="menu-arrow"></i>
                             <i class="mdi mdi-newspaper menu-icon"></i>
                         </a>
-                        <div class="collapse" id="news-menu">
+                        <div class="collapse {{ $newsActive ? 'show' : '' }}" id="news-menu">
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('admin.news.index') }}">All Posts</a>
+                                    <a class="nav-link {{ $currentRoute === 'admin.news.index' ? 'active' : '' }}" href="{{ route('admin.news.index') }}">All Posts</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('admin.news.create') }}">Add New Post</a>
+                                    <a class="nav-link {{ $currentRoute === 'admin.news.create' ? 'active' : '' }}" href="{{ route('admin.news.create') }}">Add New Post</a>
                                 </li>
                             </ul>
                         </div>
                     </li>
 
                     <!-- Games Management -->
-                    <li class="nav-item {{ request()->routeIs('admin.games.*') ? 'active' : '' }}">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#games-menu" aria-expanded="false" aria-controls="games-menu">
+                    @php
+                        $gamesActive = str_starts_with($currentRoute, 'admin.games.');
+                    @endphp
+                    <li class="nav-item {{ $gamesActive ? 'active' : '' }}">
+                        <a class="nav-link {{ $gamesActive ? '' : 'collapsed' }}" data-bs-toggle="collapse" href="#games-menu" aria-expanded="{{ $gamesActive ? 'true' : 'false' }}" aria-controls="games-menu">
                             <span class="menu-title">Games</span>
                             <i class="menu-arrow"></i>
                             <i class="mdi mdi-soccer menu-icon"></i>
                         </a>
-                        <div class="collapse {{ request()->routeIs('admin.games.*') ? 'show' : '' }}" id="games-menu">
+                        <div class="collapse {{ $gamesActive ? 'show' : '' }}" id="games-menu">
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('admin.games.index') }}">All Games</a>
+                                    <a class="nav-link {{ $currentRoute === 'admin.games.index' ? 'active' : '' }}" href="{{ route('admin.games.index') }}">All Games</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('admin.games.create') }}">Add Game</a>
+                                    <a class="nav-link {{ $currentRoute === 'admin.games.create' ? 'active' : '' }}" href="{{ route('admin.games.create') }}">Add Game</a>
                                 </li>
                             </ul>
                         </div>
                     </li>
 
                     <!-- Rewards Management -->
-                    <li class="nav-item {{ request()->routeIs('admin.rewards.*') ? 'active' : '' }}">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#rewards-menu" aria-expanded="false" aria-controls="rewards-menu">
+                    @php
+                        $rewardsActive = str_starts_with($currentRoute, 'admin.rewards.');
+                    @endphp
+                    <li class="nav-item {{ $rewardsActive ? 'active' : '' }}">
+                        <a class="nav-link {{ $rewardsActive ? '' : 'collapsed' }}" data-bs-toggle="collapse" href="#rewards-menu" aria-expanded="{{ $rewardsActive ? 'true' : 'false' }}" aria-controls="rewards-menu">
                             <span class="menu-title">Rewards</span>
                             <i class="menu-arrow"></i>
                             <i class="mdi mdi-gift menu-icon"></i>
                         </a>
-                        <div class="collapse {{ request()->routeIs('admin.rewards.*') ? 'show' : '' }}" id="rewards-menu">
+                        <div class="collapse {{ $rewardsActive ? 'show' : '' }}" id="rewards-menu">
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('admin.rewards.index') }}">Rewards Catalog</a>
+                                    <a class="nav-link {{ $currentRoute === 'admin.rewards.index' ? 'active' : '' }}" href="{{ route('admin.rewards.index') }}">Rewards Catalog</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('admin.rewards.redemptions') }}">Redemptions</a>
+                                    <a class="nav-link {{ $currentRoute === 'admin.rewards.redemptions' ? 'active' : '' }}" href="{{ route('admin.rewards.redemptions') }}">Redemptions</a>
                                 </li>
                             </ul>
                         </div>
                     </li>
 
                     <!-- Fan Photos -->
-                    <li class="nav-item {{ request()->routeIs('admin.fan-photos.*') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ route('admin.fan-photos.index') }}">
-                            <span class="menu-title">Fan Photos</span>
+                    @php
+                        $fancamActive = str_starts_with($currentRoute, 'admin.fancam.');
+                    @endphp
+                    <li class="nav-item {{ $fancamActive ? 'active' : '' }}">
+                        <a class="nav-link {{ $fancamActive ? '' : 'collapsed' }}" data-bs-toggle="collapse" href="#fancam-menu" aria-expanded="{{ $fancamActive ? 'true' : 'false' }}" aria-controls="rewards-menu">
+                            <span class="menu-title">Fancam</span>
+                            <i class="menu-arrow"></i>
                             <i class="mdi mdi-camera menu-icon"></i>
                         </a>
+                        <div class="collapse {{ $fancamActive ? 'show' : '' }}" id="fancam-menu">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item">
+                                    <a class="nav-link {{ $fancamActive === 'admin.fancam.index' ? 'active' : '' }}" href="{{ route('admin.fancam.index') }}">Dashboard</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ $fancamActive === 'admin.fancam.manage' ? 'active' : '' }}" href="{{ route('admin.fancam.manage') }}">Manage</a>
+                                </li>
+                                {{-- <li class="nav-item">
+                                    <a class="nav-link {{ $fancamActive === 'admin.fancam.game-stats' ? 'active' : '' }}" href="{{ route('admin.fancam.game-stats') }}">Statistic</a>
+                                </li> --}}
+                            </ul>
+                        </div>
                     </li>
 
                     <!-- Trivia -->
-                    <li class="nav-item {{ request()->routeIs('admin.trivia.*') ? 'active' : '' }}">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#trivia-menu" aria-expanded="false" aria-controls="trivia-menu">
+                    @php
+                        $triviaActive = str_starts_with($currentRoute, 'admin.trivia.');
+                    @endphp
+                    <li class="nav-item {{ $triviaActive ? 'active' : '' }}">
+                        <a class="nav-link {{ $triviaActive ? '' : 'collapsed' }}" data-bs-toggle="collapse" href="#trivia-menu" aria-expanded="{{ $triviaActive ? 'true' : 'false' }}" aria-controls="trivia-menu">
                             <span class="menu-title">Trivia</span>
                             <i class="menu-arrow"></i>
                             <i class="mdi mdi-help-circle menu-icon"></i>
                         </a>
-                        <div class="collapse {{ request()->routeIs('admin.trivia.*') ? 'show' : '' }}" id="trivia-menu">
+                        <div class="collapse {{ $triviaActive ? 'show' : '' }}" id="trivia-menu">
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('admin.trivia.index') }}">Questions</a>
+                                    <a class="nav-link {{ $currentRoute === 'admin.trivia.index' ? 'active' : '' }}" href="{{ route('admin.trivia.index') }}">Questions</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('admin.trivia.create') }}">Add Question</a>
+                                    <a class="nav-link {{ $currentRoute === 'admin.trivia.create' ? 'active' : '' }}" href="{{ route('admin.trivia.create') }}">Add Question</a>
                                 </li>
                             </ul>
                         </div>
@@ -302,5 +307,29 @@
     <!-- End custom js for this page -->
     <!-- Game Index JS -->
     @stack('scripts')
+
+    <script>
+        // Fix for Bootstrap collapse states on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Remove any incorrect collapse states that might be set by default
+            const collapseElements = document.querySelectorAll('.collapse');
+            collapseElements.forEach(function(element) {
+                if (!element.classList.contains('show')) {
+                    element.classList.remove('show');
+                    const trigger = document.querySelector(`[href="#${element.id}"]`);
+                    if (trigger && !trigger.classList.contains('collapsed')) {
+                        trigger.classList.add('collapsed');
+                        trigger.setAttribute('aria-expanded', 'false');
+                    }
+                }
+            });
+        });
+    </script>
+    <style>
+        .navbar .navbar-brand-wrapper .navbar-brand img{
+            height: 65px;
+            width: auto;
+        }
+    </style>
   </body>
 </html>

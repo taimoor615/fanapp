@@ -1,6 +1,6 @@
 @extends('layouts.user-dashboard')
 
-@section('title', 'Game Details')
+@section('title', 'Game Detail')
 
 @section('content')
 <div class="container-fluid">
@@ -318,7 +318,7 @@
 
                         <div class="text-start mt-3">
                             @if(!$payment)
-                            <a href="{{ route('user.games.payment', $game) }}" class="btn btn-warning btn-block w-100">
+                            <a href="{{ route('user.games.payment.show', $game) }}" class="btn btn-warning btn-block w-100">
                                 <i class="fa fa-upload"></i> Upload Payment Receipt
                             </a>
                             @elseif($payment->status === 'approved')
@@ -333,7 +333,7 @@
                                 <p class="btn btn-secondary btn-sm w-100">
                                     <i class="fa fa-times"></i> Payment Rejected
                                 </p>
-                                <a href="{{ route('user.games.payment', $game) }}" class="btn btn-warning btn-block w-100">
+                                <a href="{{ route('user.games.payment.show', $game) }}" class="btn btn-warning btn-block w-100">
                                     <i class="fa fa-upload"></i> Upload Payment Receipt
                                 </a>
                             @endif

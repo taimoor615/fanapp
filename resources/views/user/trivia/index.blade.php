@@ -1,6 +1,6 @@
 @extends('layouts.user-dashboard')
 
-@section('title', 'Games')
+@section('title', 'Trivia Dashboard')
 
 @section('content')
 <div class="container">
@@ -14,22 +14,22 @@
                 <p class="lead">Test your knowledge about the Miami Revenue Runners and earn rewards!</p>
                 <hr class="my-4 border-white">
                 <div class="row text-center">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <h3>{{ $userStats['total_points'] }}</h3>
                         <p>Total Points</p>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <h3>{{ $userStats['accuracy_percentage'] }}%</h3>
                         <p>Accuracy Rate</p>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <h3>#{{ $userStats['rank'] }}</h3>
                         <p>Your Rank</p>
                     </div>
-                    <div class="col-md-3">
+                    {{-- <div class="col-md-3">
                         <h3>{{ $userStats['streak'] }}</h3>
                         <p>Current Streak</p>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
@@ -59,6 +59,29 @@
                                 <i class="fa fa-play"></i> Take Challenge
                             </a>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Access -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-primary text-white shadow">
+                <div class="card-body text-center">
+                    <h4><i class="fa fa-rocket"></i> Ready to Challenge Yourself?</h4>
+                    <p class="mb-4">Jump right into the action with our most popular game modes!</p>
+                    <div class="btn-group" role="group">
+                        <a href="{{ route('user.trivia.play') }}" class="btn btn-warning btn-lg">
+                            <i class="fa fa-play"></i> Start Playing
+                        </a>
+                        <a href="{{ route('user.trivia.leaderboard') }}" class="btn btn-light btn-lg">
+                            <i class="fa fa-trophy"></i> View Rankings
+                        </a>
+                        <a href="{{ route('user.trivia.history') }}" class="btn btn-outline-light btn-lg">
+                            <i class="fa fa-history"></i> My History
+                        </a>
                     </div>
                 </div>
             </div>
@@ -129,9 +152,9 @@
                         <span class="badge bg-warning">15 Questions</span>
                         <span class="badge bg-danger">Hard Mode</span>
                     </div>
-                    {{-- <a href="{{ route('user.trivia.play') }}?mode=championship" class="btn btn-warning btn-lg w-100">
+                    <a href="{{ route('user.trivia.play') }}?mode=championship" class="btn btn-warning btn-lg w-100">
                         <i class="fa fa-crown"></i> Championship
-                    </a> --}}
+                    </a>
                 </div>
             </div>
         </div>
@@ -171,29 +194,6 @@
                             <strong>Trivia Master</strong>
                             <br><small class="text-muted">Complete 50 questions</small>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Access -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card bg-primary text-white shadow">
-                <div class="card-body text-center">
-                    <h4><i class="fa fa-rocket"></i> Ready to Challenge Yourself?</h4>
-                    <p class="mb-4">Jump right into the action with our most popular game modes!</p>
-                    <div class="btn-group" role="group">
-                        <a href="{{ route('user.trivia.play') }}" class="btn btn-warning btn-lg">
-                            <i class="fa fa-play"></i> Start Playing
-                        </a>
-                        <a href="{{ route('user.trivia.leaderboard') }}" class="btn btn-light btn-lg">
-                            <i class="fa fa-trophy"></i> View Rankings
-                        </a>
-                        <a href="{{ route('user.trivia.history') }}" class="btn btn-outline-light btn-lg">
-                            <i class="fa fa-history"></i> My History
-                        </a>
                     </div>
                 </div>
             </div>

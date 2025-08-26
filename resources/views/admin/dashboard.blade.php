@@ -146,7 +146,7 @@
                     <div class="list-group-item border-0 px-0">
                         <div class="d-flex align-items-start">
                             @if($post->featured_image)
-                            <img src="{{ $post->featured_image }}" alt="news" class="rounded me-3" width="50" height="50">
+                            <img src="{{ asset('storage/news/' . $post->featured_image) }}" alt="news" class="rounded me-3" width="50" height="50">
                             @else
                             <div class="bg-gradient-primary rounded me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
                                 <i class="mdi mdi-newspaper text-white"></i>
